@@ -69,6 +69,8 @@
     "build:aom": "pnpm builder aom",
     "build:geonovum-debug": "pnpm build:geonovum -- --debug",
     "build:geonovum": "pnpm builder geonovum",
+    "build:unaffiliated-debug": "pnpm build:unaffiliated -- --debug",
+    "build:unaffiliated": "pnpm builder unaffiliated",
     "build:w3c-debug": "pnpm build:w3c -- --debug",
     "build:w3c": "pnpm builder w3c",
     "build:dini-debug": "pnpm build:dini -- --debug",
