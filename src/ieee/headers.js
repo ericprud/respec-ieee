@@ -183,22 +183,6 @@ export const licenses = new Map([
     },
   ],
   [
-    "w3c-software",
-    {
-      name: "W3C Software Notice and License",
-      short: "W3C Software",
-      url: "https://www.w3.org/Consortium/Legal/2002/copyright-software-20021231",
-    },
-  ],
-  [
-    "w3c-software-doc",
-    {
-      name: "W3C Software and Document Notice and License",
-      short: "permissive document license",
-      url: "https://www.w3.org/Consortium/Legal/2023/software-license",
-    },
-  ],
-  [
     "cc-by",
     {
       name: "Creative Commons Attribution 4.0 International Public License",
@@ -251,6 +235,29 @@ function validateDateAndRecover(conf, prop, fallbackDate = new Date()) {
   return new Date(ISODate.format(new Date()));
 }
 
+function deriveLicenseInfo(conf) {
+  let license = undefined;
+  if (typeof conf.license === "string") {
+    const lCaseLicense = conf.license.toLowerCase();
+    if (!licenses.has(lCaseLicense)) {
+      const msg = `The license "\`${conf.license}\`" is not supported.`;
+      const choices = codedJoinOr(
+        [...licenses.keys()].filter(k => k),
+        {
+          quotes: true,
+        }
+      );
+      const hint = docLink`Please set
+        ${"[license]"} to one of: ${choices}. If in doubt, remove \`license\` and let ReSpec pick one for you.`;
+      showError(msg, name, { hint });
+    } else {
+      license = lCaseLicense;
+    }
+  }
+  const licenseInfo = licenses.get(license);
+  return licenseInfo;
+}
+
 export async function run(conf) {
   conf.isBasic = conf.specStatus === "base";
   conf.isCGBG = cgbgStatus.includes(conf.specStatus);
@@ -260,6 +267,7 @@ export async function run(conf) {
   conf.isCRY = conf.specStatus === "CRY" || conf.specStatus === "CRYD";
   conf.isEd = conf.specStatus === "ED";
   conf.isUnofficial = conf.specStatus === "unofficial";
+//  conf.licenseInfo = deriveLicenseInfo(conf);
   conf.longStatus = status2long[conf.specStatus];
   conf.textStatus = status2text[conf.specStatus];
   conf.showPreviousVersion = false;
@@ -299,14 +307,14 @@ export async function run(conf) {
     const year = [...trStatus, "Member-SUBM"].includes(conf.specStatus)
       ? `${publishDate.getUTCFullYear()}/`
       : "";
-    conf.thisVersion = resolveUrl(`${pubSpace}/${year}${docVersion}/`, conf.base);
+    conf.thisVersion = resolveUrl(`${pubSpace}/${year}${docVersion}/`, conf.baseURL);
   }
 
   if (conf.isEd) conf.thisVersion = conf.edDraftURI;
   if (conf.latestVersion !== null) {
     conf.latestVersion = conf.latestVersion
-      ? resolveUrl(conf.latestVersion, conf.base)
-      : resolveUrl(`${pubSpace}/${conf.shortName}/`, conf.base);
+      ? resolveUrl(conf.latestVersion, conf.baseURL)
+      : resolveUrl(`${pubSpace}/${conf.shortName}/`, conf.baseURL);
   }
 
   const latestPath = `${pubSpace}/${conf.shortName}`;
@@ -331,7 +339,7 @@ export async function run(conf) {
       const date = concatDate(conf.previousPublishDate);
       conf.prevVersion = resolveUrl(
         `${pubSpace}/${year}/${prevMaturity}-${shortName}-${date}/`,
-        conf.base
+        conf.baseURL
       );
     }
   }
