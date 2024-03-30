@@ -276,14 +276,17 @@ function createTableOfContents(ol) {
   addId(h2);
   nav.append(h2, ol);
   const ref =
-    document.getElementById("toc") ||
-    document.getElementById("sotd") ||
-    document.getElementById("abstract");
+    document.getElementById("toc");
   if (ref) {
-    if (ref.id === "toc") {
-      ref.replaceWith(nav);
+    ref.replaceWith(nav);
+  } else {
+    const introductoryElements = document.body.getElementsByClassName("introductory");
+    if (introductoryElements.length === 0) {
+      const msg = `Expected to add TOC after existing introductory elements like '#abstract' or '#sotd'`;
+      showError(msg, name);
+      document.body.insertAdjacentElement('afterbegin', nav); // stick nav at the top and let folks fix missing elements
     } else {
-      ref.after(nav);
+      introductoryElements[introductoryElements.length - 1].after(nav);
     }
   }
 
