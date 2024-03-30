@@ -9,13 +9,14 @@ const licenses = new Map([
   [
     "ieee",
     {
-      name: "Apache2 License",
-      url: "https://www.apache.org/licenses/LICENSE-2.0",
+      name: "Alliance for Open Media License",
+      short: "IEEE",
+      url: "http://ieeeedia.org/license/",
     },
   ],
 ]);
 
-const ieee = {
+const ieeeDefaults = {
   // treat document as "Common Markdown" (with a little bit of HTML).
   // choice between Markdown and HTML depends on the complexity of the spec
   // example of Markdown spec: https://github.com/WICG/netinfo/blob/gh-pages/index.html
@@ -23,12 +24,12 @@ const ieee = {
   format: "markdown",
   logos: [
     {
-      src: "https://upload.wikimedia.org/wikipedia/commons/2/21/IEEE_logo.svg",
+      src: "https://brand-experience.ieee.org/wp-content/uploads/2016/12/20040816-300x168.jpeg",
       alt: "IEEE",
       id: "IEEE",
-      height: 170,
-      width: 170,
-      url: "https://www.ieee.org/",
+      height: 112,
+      width: 200,
+      url: "https://ieeeedia.org/",
     },
   ],
   license: "ieee",
@@ -47,12 +48,12 @@ export function run(conf) {
       ? false
       : {
           ...coreDefaults.lint,
-          ...ieee.lint,
+          ...ieeeDefaults.lint,
           ...conf.lint,
         };
   Object.assign(conf, {
     ...coreDefaults,
-    ...ieee,
+    ...ieeeDefaults,
     ...conf,
     lint,
   });

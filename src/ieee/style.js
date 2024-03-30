@@ -1,16 +1,19 @@
 // @ts-check
 // Module ieee/style
-// Inserts a link to the appropriate FDP style for the specification's maturity level.
+// Inserts a link to the appropriate style for the specification's maturity level.
 // CONFIGURATION
 //  - specStatus: the short code for the specification's maturity level or type (required)
 
-import { createResourceHint, linkCSS } from "../core/utils.js";
-import { html } from "../core/import-maps.js";
+import {
+  createResourceHint,
+  linkCSS,
+  showWarning,
+  toKeyValuePairs,
+} from "../core/utils.js";
 import { sub } from "../core/pubsubhub.js";
-export const name = "w3c/style";
-
-function attachFixupScript() {
-  const script = html`<script src="https://www.w3.org/scripts/TR/2021/fixup.js">`;
+export const name = "ieee/style";
+function attachFixupScript(doc, version) {
+  const script = doc.createElement("script");
   if (location.hash) {
     script.addEventListener(
       "load",
@@ -20,7 +23,35 @@ function attachFixupScript() {
       { once: true }
     );
   }
-  document.body.appendChild(script);
+  script.src = `https://www.w3.org/scripts/TR/${version}/fixup.js`;
+  doc.body.appendChild(script);
+}
+
+/**
+ * Make a best effort to attach meta viewport at the top of the head.
+ * Other plugins might subsequently push it down, but at least we start
+ * at the right place. When ReSpec exports the HTML, it again moves the
+ * meta viewport to the top of the head - so to make sure it's the first
+ * thing the browser sees. See js/ui/save-html.js.
+ */
+function createMetaViewport() {
+  const meta = document.createElement("meta");
+  meta.name = "viewport";
+  const contentProps = {
+    width: "device-width",
+    "initial-scale": "1",
+    "shrink-to-fit": "no",
+  };
+  meta.content = toKeyValuePairs(contentProps).replace(/"/g, "");
+  return meta;
+}
+
+function createBaseStyle() {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "https://www.w3.org/StyleSheets/TR/2016/base.css";
+  link.classList.add("removeOnSave");
+  return link;
 }
 
 function createResourceHints() {
@@ -32,19 +63,18 @@ function createResourceHints() {
     },
     {
       hint: "preload", // all specs need it, and we attach it on end-all.
-      href: "https://www.w3.org/scripts/TR/2021/fixup.js",
+      href: "https://www.w3.org/scripts/TR/2016/fixup.js",
       as: "script",
     },
     {
-      hint: "preload", // all specs include on base.css.
-      href: "https://www.w3.org/StyleSheets/TR/2021/base.css",
+      hint: "preload",
+      href: "../src/ieee/ieee.css",
       as: "style",
     },
     {
-      hint: "preload", // all specs show the logo.
-      href: "https://www.w3.org/StyleSheets/TR/2021/logos/W3C",
-      as: "image",
-      corsMode: "anonymous",
+      hint: "preload", // all specs include on base.css.
+      href: "https://www.w3.org/StyleSheets/TR/2016/base.css",
+      as: "style",
     },
   ];
   const resourceHints = document.createDocumentFragment();
@@ -57,47 +87,57 @@ function createResourceHints() {
 const elements = createResourceHints();
 
 // Opportunistically apply base style
-elements.appendChild(html`<link
-  rel="stylesheet"
-  href="https://www.w3.org/StyleSheets/TR/2021/base.css"
-  class="removeOnSave"
-/>`);
+elements.appendChild(createBaseStyle());
 if (!document.head.querySelector("meta[name=viewport]")) {
   // Make meta viewport the first element in the head.
-  elements.prepend(
-    html`<meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />`
-  );
+  elements.prepend(createMetaViewport());
 }
 
 document.head.prepend(elements);
 
-function styleMover(linkURL) {
+function styleMover(linkURLs) {
   return exportDoc => {
-    const w3cStyle = exportDoc.querySelector(`head link[href="${linkURL}"]`);
-    exportDoc.querySelector("head").append(w3cStyle);
+    for (linkURL of linkURLs) {
+      const style = exportDoc.querySelector(`head link[href="${linkURL}"]`);
+      exportDoc.querySelector("head").append(style);
+    }
   };
 }
 
 export function run(conf) {
-  const canonicalStatus = conf.specStatus?.toUpperCase() ?? "";
+  if (!conf.specStatus) {
+    const msg = "`respecConfig.specStatus` missing. Defaulting to 'base'.";
+    conf.specStatus = "base";
+    showWarning(msg, name);
+  }
+
   let styleFile = "";
 
   // Figure out which style file to use.
-  styleFile = "base.css";
+  switch (conf.specStatus.toUpperCase()) {
+    case "PD":
+      styleFile = "W3C-UD";
+      break;
+    default:
+      styleFile = "base.css";
+      break;
+  }
 
   // Attach W3C fixup script after we are done.
   if (!conf.noToc) {
-    sub("end-all", attachFixupScript, { once: true });
+    sub(
+      "end-all",
+      () => {
+        attachFixupScript(document, "2016");
+      },
+      { once: true }
+    );
   }
-  const finalStyleURL = new URL(
-    `/StyleSheets/TR/2021/${styleFile}`,
-    "https://www.w3.org/"
-  );
-  linkCSS(document, finalStyleURL.href);
+  const trStyleURL = `https://www.w3.org/StyleSheets/TR/2016/${styleFile}`;
+  linkCSS(document, trStyleURL);
   // Make sure the W3C stylesheet is the last stylesheet, as required by W3C Pub Rules.
-  const moveStyle = styleMover(finalStyleURL);
+  const ieeeStyleURL = "../src/ieee/ieee.css";
+  linkCSS(document, ieeeStyleURL);
+  const moveStyle = styleMover([trStyleURL, ieeeStyleURL]);
   sub("beforesave", moveStyle);
 }
