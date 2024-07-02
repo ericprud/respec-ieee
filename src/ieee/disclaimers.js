@@ -19,7 +19,13 @@ export async function run(conf) {
     showError(msg, name);
   }
   const afterMe = introductoryElements[introductoryElements.length - 1];
-  const addMes = html`
+  const addMes = (conf.specStatus !== 'Final')
+        ? (html`
+<section id="debug" class="introductory"><!--OddPage--><h2 style="color: red;">Draft</h2>
+<p>This status of this document ${conf.specStatus}, it is NOT an IEEE specifiation.</p>
+</section>
+`)
+        : (html`
 <section id="disclaimers1" class="introductory"><!--OddPage--><h2>Important Notices and Disclaimers Concerning IEEE Standards Documents</h2>
 <p>
 IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all IEEE standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
@@ -66,8 +72,8 @@ No part of this publication may be reproduced in any form, in an electronic retr
 <p>
 </div>
 </section>
-`.childNodes;
-  for (const elt of addMes.reverse()) {
+`);
+  for (const elt of [...addMes.childNodes].reverse()) {
     afterMe.after(elt);
   }
 }

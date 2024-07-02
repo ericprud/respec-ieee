@@ -68,7 +68,7 @@ function createResourceHints() {
     },
     {
       hint: "preload",
-      href: "../src/ieee/ieee.css",
+      href: "//raw.githubusercontent.com/ericprud/respec-ieee/ieee/src/ieee/ieee.css",
       as: "style",
     },
     {
@@ -136,7 +136,7 @@ export function run(conf) {
   const trStyleURL = `https://www.w3.org/StyleSheets/TR/2016/${styleFile}`;
   linkCSS(document, trStyleURL);
   // Make sure the W3C stylesheet is the last stylesheet, as required by W3C Pub Rules.
-  const ieeeStyleURL = "../src/ieee/ieee.css";
+  const ieeeStyleURL = "//raw.githubusercontent.com/ericprud/respec-ieee/ieee/src/ieee/ieee.css";
   linkCSS(document, ieeeStyleURL);
   const moveStyle = styleMover([trStyleURL, ieeeStyleURL]);
   sub("beforesave", moveStyle);

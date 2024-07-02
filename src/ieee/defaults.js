@@ -21,7 +21,7 @@ const ieeeDefaults = {
   // choice between Markdown and HTML depends on the complexity of the spec
   // example of Markdown spec: https://github.com/WICG/netinfo/blob/gh-pages/index.html
   // Helpful guide: https://respec.org/docs/#markdown
-  format: "markdown",
+  format: "html", // breaks when 'markdown' because the pre's have no language tag.
   logos: [
     {
       src: "https://brand-experience.ieee.org/wp-content/uploads/2016/12/20040816-300x168.jpeg",
