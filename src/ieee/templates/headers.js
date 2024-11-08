@@ -39,6 +39,9 @@ export default conf => {
   document.respec.ready.then(() => {
     setTimeout(() => {
       document.querySelector('#toc-toggle').click();
+        const from = document.getElementById('toc');
+        const to = document.getElementById('overview');
+        to.prepend(from);
     }, 50); // Why do I need a timeout here? console.logs here and in structure.js say #toc-tottle already exists.
   });
   return html`<div class="head">

@@ -15,6 +15,7 @@ const modules = [
   import("../src/ieee/abstract.js"),
   import("../src/ieee/keywords.js"),
   import("../src/ieee/disclaimers.js"),
+  import("../src/ieee/overview.js"),
   import("../src/core/data-transform.js"),
   import("../src/core/data-abbr.js"),
   import("../src/core/inlines.js"),
@@ -32,7 +33,7 @@ const modules = [
   import("../src/core/contrib.js"),
   import("../src/core/sections.js"),
   import("../src/core/fix-headers.js"),
-  import("../src/core/structure.js"),
+  import("../src/core/structure.js"), // This addes the TOC
   import("../src/core/informative.js"),
   import("../src/core/id-headers.js"),
   import("../src/ui/save-html.js"),
