@@ -68,4 +68,4 @@ h1, h2, h3 {
     }
 }
 
-section#copyright-page > div { border: thick solid red; white-space: pre; font-size: .5em; }
+section#copyright-page > div { white-space: pre; font-size: .5em; }
