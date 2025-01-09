@@ -150,6 +150,12 @@ export default conf => {
     </dl>
     ${renderCopyright(conf)}
     ${renderDraftiness(conf)}
+
+    <p>
+IEEE Standards Department<br/>
+445 Hoes Lane<br/>
+Piscataway, NJ 08854, USA
+    </p>
     <hr />
   </div>`;
 };

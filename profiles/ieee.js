@@ -19,7 +19,7 @@ const modules = [
   import("../src/core/data-transform.js"),
   import("../src/core/data-abbr.js"),
   import("../src/core/inlines.js"),
-  import("../src/aom/conformance.js"),
+  import("../src/ieee/conformance.js"),
   import("../src/core/dfn.js"),
   import("../src/core/pluralize.js"),
   import("../src/core/examples.js"),
@@ -29,7 +29,7 @@ const modules = [
   import("../src/core/biblio.js"),
   import("../src/core/link-to-dfn.js"),
   import("../src/core/data-cite.js"),
-  import("../src/core/render-biblio.js"),
+  import("../src/ieee/render-biblio.js"),
   import("../src/core/contrib.js"),
   import("../src/core/sections.js"),
   import("../src/core/fix-headers.js"),
@@ -55,6 +55,7 @@ const modules = [
   import("../src/core/linter-rules/no-unused-vars.js"),
   import("../src/core/linter-rules/privsec-section.js"),
   import("../src/core/linter-rules/no-http-props.js"),
+  import("../src/ieee/rm-abstract.js"),
 ];
 
 Promise.all(modules)

@@ -67,3 +67,5 @@ h1, h2, h3 {
         margin: 0;
     }
 }
+
+section#copyright-page > div { border: thick solid red; white-space: pre; font-size: .5em; }
