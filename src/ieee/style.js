@@ -99,7 +99,7 @@ document.head.prepend(elements);
 
 function styleMover(linkURLs) {
   return exportDoc => {
-    for (linkURL of linkURLs) {
+    for (const linkURL of linkURLs) {
       const style = exportDoc.querySelector(`head link[href="${linkURL}"]`);
       exportDoc.querySelector("head").append(style);
     }
