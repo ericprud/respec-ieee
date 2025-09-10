@@ -22,10 +22,10 @@ export async function run(conf) {
   conf.abstrct = document.getElementById('abstract')
   const overviewHtml = [...conf.abstrct.childNodes].filter(e => !e.localName?.startsWith('h'));
   const scopeText = conf.scope;
-  const addMes = (conf.overview === 999)
+  const addMes = (!conf.ieeeHeader)
         ? (html`
-<section id="debug" class="introductory"><!--OddPage--><h2 style="color: red;">Overview</h2>
-<p>If there were an overview in the respec config, it would go here.</p>
+<section id="overview" class="introductory"><!--OddPage--><h2>Overview</h2>
+  ${overviewHtml}
 </section>
 `)
         : (html`

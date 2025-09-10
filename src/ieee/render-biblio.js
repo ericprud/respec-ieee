@@ -2,7 +2,7 @@
 // Module core/render-biblio
 // renders the biblio data pre-processed in core/biblio
 
-import { addId, getIntlData, showError } from "../core/utils.js";
+import { addId, getIntlData, showWarning, showError } from "../core/utils.js";
 import { biblio } from "../core/biblio.js";
 import { html } from "../core/import-maps.js";
 
@@ -62,7 +62,7 @@ const REF_STATUSES = new Map([
 const endWithDot = endNormalizer(".");
 
 /** @param {Conf} conf */
-export function run(conf) { debugger
+export function run(conf) {
   const norms = Array.from(conf.normativeReferences);
 
   if (!norms.length) return;
@@ -209,9 +209,23 @@ function stringifyReference(ref) {
   let output = '';
 
   if (ref.authors && ref.authors.length) {
-    output += ref.authors.join("; ");
+    output += ref.authors.map(
+      a => typeof a === "string"
+        ? a
+        : a.url
+        ? `<a href="${a.url}">${a.name}</a>`
+        : a.name
+    ).join("; ");
     if (ref.etAl) output += " et al";
     output += ". ";
+  }
+  if (ref.date) {
+    const year = ref.date.match(/((?:19|20)\d\d)/);
+    if (year) {
+      output += `${year[0]}. `;
+    } else {
+      showError(`no year found in [${ref.id}]'s date: "${ref.date}"`, 'ieee/render-biblio');
+    }
   }
   let title = `<cite>${ref.title}</cite>`;
 
@@ -220,7 +234,6 @@ function stringifyReference(ref) {
   if (ref.publisher) {
     output = `${output} ${endWithDot(ref.publisher)} `;
   }
-  if (ref.date) output += `${ref.date}. `;
   if (ref.status) output += `${REF_STATUSES.get(ref.status) || ref.status}. `;
   if (ref.href) output += `URL: <a href="${ref.href}">${ref.href}</a>`;
   return output;

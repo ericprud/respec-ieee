@@ -45,7 +45,7 @@ export default conf => {
     }, 50); // Why do I need a timeout here? console.logs here and in structure.js say #toc-tottle already exists.
   });
   return html`<div class="head">
-    ${conf.specStatus !== "PD" ? conf.logos.map(showLogo) : ""}
+    ${conf.ieeeHeader ? conf.logos.map(showLogo) : "editors' draft"}
     <h1>P${conf.varDesignation}<sup>TM</sup>${conf.varDraftNumber ? "/D" + conf.varDraftNumber : ""}</h1>
     <h1 id="title">Draft ${l10n.G_or_RP_or_STD[conf.GorRPorSTD]} for ${conf.varTitlePAR}</h1>
     <details>
@@ -148,17 +148,18 @@ export default conf => {
         : ""}
       <dt>Approved ${conf.varApprovedDate}</dt>
     </dl>
-    ${renderCopyright(conf)}
-    ${renderDraftiness(conf)}
-
-    <p>
-IEEE Standards Department<br/>
-445 Hoes Lane<br/>
-Piscataway, NJ 08854, USA
-    </p>
+    ${conf.ieeeHeader ? renderCopyright(conf) + renderDraftiness(conf) + renderAddr(conf): ""}
     <hr />
   </div>`;
 };
+
+function renderAddr(conf) {
+  return `    <p>
+IEEE Standards Department<br/>
+445 Hoes Lane<br/>
+Piscataway, NJ 08854, USA
+</p>`;
+}
 
 export function renderFeedback(conf) {
   const definitions = [];

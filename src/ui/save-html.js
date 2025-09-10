@@ -252,6 +252,9 @@ function selectRepChoices(cloneDoc, toKeep, toRemove) {
           }, []);
           const trimmedText = trimmedLines.join('\n');
           keeper.textContent = trimmedText;
+          keeper.parentElement.querySelectorAll('button').forEach(
+            b => b.remove()
+          );
           // console.log([fatText, keeper.textContent]);
         });
     });

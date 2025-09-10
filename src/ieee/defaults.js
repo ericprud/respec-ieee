@@ -33,6 +33,7 @@ const ieeeDefaults = {
     },
   ],
   license: "ieee",
+  ieeeHeader: new URL(location.href).hostname.endsWith('ieee.org'),
 };
 
 function computeProps(conf) {
@@ -51,6 +52,10 @@ export function run(conf) {
           ...ieeeDefaults.lint,
           ...conf.lint,
         };
+
+  if (conf.ieeeHeader)
+    ieeeDefaults:ieeeHeader = true;
+
   Object.assign(conf, {
     ...coreDefaults,
     ...ieeeDefaults,
