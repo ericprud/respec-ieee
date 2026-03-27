@@ -9,4 +9,6 @@ export async function run(conf) {
   const overviewLi = document.querySelector('#toc [href="#overview"]').parentNode;
   const tocLis = [...document.querySelectorAll('#toc > ol > li')];
   tocLis.slice(0, tocLis.indexOf(overviewLi)).map(elt => elt.remove());
+
+  document.getElementById('sotd').innerHTML = '';
 }

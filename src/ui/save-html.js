@@ -68,7 +68,7 @@ const downloadLinks = [
     type: "application/foo+bar",
     get href() {
       const cloneDoc = document
-            // .cloneNode(true)
+            .cloneNode(true) // debugging tip: comment this out view the treated document directly rather than download it and open it.
       ;
 
       // script elements are typically marked for removal
